@@ -89,3 +89,7 @@ jobs:
     - name: Update frontend deployment image
       run: |
         kubectl set image deployment/frontend frontend=$DOCKERHUB_REPO_FRONTEND:${{ env.IMAGE_TAG }} -n $K8S_NAMESPACE
+
+    - name: svc
+      run: |
+        kubectl get svc
