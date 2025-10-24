@@ -80,7 +80,7 @@ jobs:
 
     - name: Deploy Postgres
       run: |
-        kubectl apply -f deployment/postgres.yml -n $K8S_NAMESPACE
+        kubectl apply -f deployment/postgres-deployment.yml -n $K8S_NAMESPACE
 
     - name: Update backend deployment image
       run: |
