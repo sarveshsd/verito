@@ -1,0 +1,36 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: sarveshsd/react-fullstack-frontend:latest
+        ports:
+        - containerPort: 3000
+        env:
+        - name: REACT_APP_SERVER_URL
+          value: "http://a1c441c73e5b1486bb3a673d14a4e249-345068005.us-east-1.elb.amazonaws.com:8080/employees"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+spec:
+  selector:
+    app: frontend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+  type: LoadBalancer
