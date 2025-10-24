@@ -54,3 +54,33 @@ jobs:
       run: |
         docker build -t $DOCKERHUB_REPO_FRONTEND:${{ env.VERSION }} ./app/frontend
         docker push $DOCKERHUB_REPO_FRONTEND:${{ env.VERSION }}
+    
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+
+    - name: Setup kubectl for EKS
+      uses: aws-actions/eks-kubectl@v2
+      with:
+        cluster-name: sarvesh-eks
+        region: us-east-1
+
+    - name: Update backend deployment image
+      run: |
+        kubectl set image -f deployment/back.yml backend=$DOCKERHUB_REPO_BACKEND:${{ env.VERSION }} -n $K8S_NAMESPACE
+
+    - name: Update frontend deployment image
+      run: |
+        kubectl set image -f deployment/front.yml frontend=$DOCKERHUB_REPO_FRONTEND:${{ env.VERSION }} -n $K8S_NAMESPACE
+
+    - name: Deploy PV and PVC
+      run: |
+        kubectl apply -f deployment/pv.yml -n $K8S_NAMESPACE
+        kubectl apply -f deployment/pvc.yml -n $K8S_NAMESPACE
+
+    - name: Deploy Postgres
+      run: |
+        kubectl apply -f deployment/postgres.yml -n $K8S_NAMESPACE
