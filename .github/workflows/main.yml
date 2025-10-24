@@ -82,14 +82,13 @@ jobs:
       run: |
         kubectl apply -f deployment/postgres-deployment.yml -n $K8S_NAMESPACE
 
+        
     - name: Update backend deployment image
       run: |
-        kubectl set image deployment/backend backend=$DOCKERHUB_REPO_BACKEND:${{ env.IMAGE_TAG }} -n $K8S_NAMESPACE
-
+        kubectl set image deployment/backend-deployment backend=$DOCKERHUB_REPO_BACKEND:${{ env.IMAGE_TAG }} -n $K8S_NAMESPACE 
     - name: Update frontend deployment image
       run: |
-        kubectl set image deployment/frontend frontend=$DOCKERHUB_REPO_FRONTEND:${{ env.IMAGE_TAG }} -n $K8S_NAMESPACE
-
+        kubectl set image deployment/frontend-deployment frontend=$DOCKERHUB_REPO_FRONTEND:${{ env.IMAGE_TAG }} -n $K8S_NAMESPACE 
     - name: svc
       run: |
         kubectl get svc
